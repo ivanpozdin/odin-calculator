@@ -5,25 +5,28 @@ const operations = [...document.querySelectorAll(".operation")];
 const equalBtn = document.querySelector("#equal");
 const clearBtn = document.querySelector("#clear");
 const allClearBtn = document.querySelector("#all-clear");
+const buttons = [...document.querySelectorAll(".calculator-container button")];
 
 const resultElement = document.querySelector("#result-field");
 
 let [number1, number2, operation] = ["", "", ""];
 
 const clearResultField = function () {
-  resultElement.textContent = "";
+  resultElement.textContent = "0";
   [number1, number2, operation] = ["", "", ""];
 };
 
 const deleteOneDigit = function () {
   if (number1 && !operation) {
     number1 = number1.slice(0, `${number1}`.length - 1);
-    resultElement.textContent = number1;
+    resultElement.textContent = "0";
+    if (number1) resultElement.textContent = number1;
   }
 
   if (operation && number2) {
     number2 = number2.slice(0, -1);
-    resultElement.textContent = number2;
+    resultElement.textContent = "0";
+    if (number2) resultElement.textContent = number2;
   }
 };
 
@@ -82,12 +85,26 @@ equalBtn.addEventListener("click", (e) => {
       result = +number1 * +number2;
       break;
     case "/":
-      result = +number1 / +number2;
+      if (+number2) result = +number1 / +number2;
+      else {
+        clearResultField();
+        resultElement.textContent = "ERR";
+        return;
+      }
       break;
     default:
       result = +number1 + +number2;
   }
   result = parseFloat(result.toFixed(5));
   resultElement.textContent = result;
-  [number1, number2, operation] = [result, "", ""];
+  [number1, number2, operation] = [`${result}`, "", ""];
+});
+
+buttons.forEach((btn) => {
+  btn.addEventListener("mouseover", function (e) {
+    btn.style["opacity"] = "80%";
+  });
+  btn.addEventListener("mouseleave", function (e) {
+    btn.style["opacity"] = "100%";
+  });
 });
